@@ -1,0 +1,13 @@
+{
+  "name": "hmi-sonic",
+  "version": "1.0.0",
+  "description": "A simple HMI for Sonic device",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./assets/tailwind.css -o ./public/app.css --minify",
+    "watch:css": "npx tailwindcss -i ./assets/tailwind.css -o ./public/app.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.1",
+    "tailwindcss": "^4.2.1"
+  }
+}
