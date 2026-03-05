@@ -13,43 +13,25 @@ type Post struct {
 }
 
 type Router struct {
-	render        func(http.ResponseWriter, string, any)
-	renderPartial func(http.ResponseWriter, string, any)
+	render func(http.ResponseWriter, *http.Request, string, any)
 }
 
-func New(
-	render func(http.ResponseWriter, string, any),
-	renderPartial func(http.ResponseWriter, string, any),
-) http.Handler {
-	r := &Router{
-		render:        render,
-		renderPartial: renderPartial,
-	}
-
+func New(render func(http.ResponseWriter, *http.Request, string, any)) http.Handler {
+	r := &Router{render: render}
 	router := chi.NewRouter()
 
-	router.Get("/", r.base)
+	router.Get("/", r.connectors)
 	router.Get("/connectors", r.connectors)
 	router.Get("/identification", r.identification)
 
 	return router
 }
 
-func (r *Router) base(w http.ResponseWriter, req *http.Request) {
-	data := map[string]any{
-		"Title": "Connectors",
-		"User":  "default",
-	}
-	r.render(w, "base", data)
-}
-
 func (r *Router) connectors(w http.ResponseWriter, req *http.Request) {
 	data := map[string]any{
 		"Title": "Connectors",
-		"User":  "default",
 	}
-
-	r.renderPartial(w, "connectors", data)
+	r.render(w, req, "connectors", data)
 }
 
 func (r *Router) identification(w http.ResponseWriter, req *http.Request) {
@@ -63,11 +45,10 @@ func (r *Router) identification(w http.ResponseWriter, req *http.Request) {
 			Title: "Identification 2",
 		},
 	}
-
 	data := map[string]any{
 		"Title": "Identification",
 		"Year":  time.Now().Year(),
 		"Posts": posts,
 	}
-	r.renderPartial(w, "identification", data)
+	r.render(w, req, "identification", data)
 }
