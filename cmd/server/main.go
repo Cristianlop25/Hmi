@@ -20,7 +20,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/app.css", http.FileServer(http.Dir("public")))
 	mux.Handle("/sprite.svg", http.FileServer(http.Dir("assets")))
-	mux.Handle("/", router.New(render))
+	mux.Handle("/", router.New(render, renderPartial))
 	mux.HandleFunc("/events", sseHandler)
 
 	go broadcastLoop()
@@ -33,10 +33,19 @@ func main() {
 func render(w http.ResponseWriter, name string, data any) {
 	tpl := template.Must(template.ParseFiles(
 		"views/layouts/base.html",
-		"views/pages/"+name+".html",
 	))
 
 	if err := tpl.ExecuteTemplate(w, "base", data); err != nil {
+		http.Error(w, err.Error(), 500)
+	}
+}
+
+func renderPartial(w http.ResponseWriter, name string, data any) {
+	tpl := template.Must(template.ParseFiles(
+		"views/pages/" + name + ".html",
+	))
+
+	if err := tpl.ExecuteTemplate(w, "content", data); err != nil {
 		http.Error(w, err.Error(), 500)
 	}
 }
@@ -66,7 +75,7 @@ func sseHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	for msg := range messageChan {
-		fmt.Fprintf(w, "event: message\ndata: {url:%s, message: redirecting to %s...}\n\n", msg, msg)
+		fmt.Fprintf(w, "event: %s\ndata: %s\n\n", msg, msg)
 		flusher.Flush()
 	}
 }
@@ -90,10 +99,10 @@ func terminalLoop() {
 		fmt.Scanln(&input)
 		switch input {
 		case "connectors":
-			broadcast <- "/connectors"
+			broadcast <- "connectors"
 			log.Println("Sending connectors")
 		case "identification":
-			broadcast <- "/identification"
+			broadcast <- "identification"
 			log.Println("Sending identification")
 		default:
 			log.Println("Unknown command:", input)

@@ -34,17 +34,23 @@
         </div>
       </header>
 
-      <section class="flex-1 p-6">{{block "content" .}}{{end}}</section>
+      <section id="view" class="flex-1 p-6">
+        {{block "content" .}}{{end}}
+      </section>
 
-      <div
-        x-data="{ message:'' }"
-        hx-ext="sse"
-        sse-connect="/events"
-        sse-swap="message"
-        class="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded shadow"
-      >
-        Contents of this box will be updated in real time with every SSE message
-        received from the chatroom.
+      <div hx-ext="sse" sse-connect="/events">
+        <div
+          hx-get="/connectors"
+          hx-trigger="sse:connectors"
+          hx-target="#view"
+          hx-swap="innerHTML"
+        ></div>
+        <div
+          hx-get="/identification"
+          hx-trigger="sse:identification"
+          hx-target="#view"
+          hx-swap="innerHTML"
+        ></div>
       </div>
     </main>
   </body>
