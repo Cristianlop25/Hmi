@@ -22,17 +22,21 @@
     ></script>
   </head>
   <body
-    class="min-h-screen flex items-center justify-center bg-linear-to-br from-primary/80 to-secondary/80 text-neutral-900"
+    class="min-h-screen flex items-center justify-center bg-linear-to-r from-secondary/80 to-primary/80 text-neutral-900"
     hx-ext="sse"
   >
     <main class="aspect-9/16 w-full max-w-1080 overflow-hidden flex flex-col">
-      <header class="top flex items-center justify-between">
+      <header class="top flex items-center justify-center">
         <div class="flex flex-row px-6 h-[120px] items-center gap-50">
           <svg class="w-44 text-white">
             <use href="/sprite.svg#circutor"></use>
           </svg>
         </div>
       </header>
+
+      <div
+        class="bg-black rounded-4xl mx-[48px] my-[24px] w-[984px] h-[738px]"
+      ></div>
 
       <section id="view" class="flex-1 p-6">
         {{block "content" .}}{{end}}

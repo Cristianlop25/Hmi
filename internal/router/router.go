@@ -28,8 +28,19 @@ func New(render func(http.ResponseWriter, *http.Request, string, any)) http.Hand
 }
 
 func (r *Router) connectors(w http.ResponseWriter, req *http.Request) {
+	type Connector struct {
+		Name string
+		Type string
+	}
+
+	connectors := []Connector{
+		{Name: "Socket A", Type: "CCS2"},
+		{Name: "Socket B", Type: "CCS2"},
+	}
 	data := map[string]any{
-		"Title": "Connectors",
+		"Title":      "Connectors",
+		"Year":       time.Now().Year(),
+		"Connectors": connectors,
 	}
 	r.render(w, req, "connectors", data)
 }
