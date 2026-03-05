@@ -12,8 +12,10 @@ type Post struct {
 	Title string
 }
 
+type RenderFunc func(http.ResponseWriter, *http.Request, string, any)
+
 type Router struct {
-	render func(http.ResponseWriter, *http.Request, string, any)
+	render RenderFunc
 }
 
 func New(render func(http.ResponseWriter, *http.Request, string, any)) http.Handler {
