@@ -6,11 +6,24 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Sonic</title>
     <link rel="stylesheet" href="/app.css" />
-    <script src="https://unpkg.com/htmx.org"></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/sse.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"
+      integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/htmx-ext-sse@2.2.4"
+      integrity="sha384-A986SAtodyH8eg8x8irJnYUk7i9inVQqYigD6qZ9evobksGNIXfeFvDwLSHcp31N"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
   </head>
   <body
     class="min-h-screen flex items-center justify-center bg-linear-to-br from-primary/80 to-secondary/80 text-neutral-900"
+    hx-ext="sse"
   >
     <main class="aspect-9/16 w-full max-w-1080 overflow-hidden flex flex-col">
       <header class="top flex items-center justify-between">
@@ -20,7 +33,19 @@
           </svg>
         </div>
       </header>
+
       <section class="flex-1 p-6">{{block "content" .}}{{end}}</section>
+
+      <div
+        x-data="{ message:'' }"
+        hx-ext="sse"
+        sse-connect="/events"
+        sse-swap="message"
+        class="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded shadow"
+      >
+        Contents of this box will be updated in real time with every SSE message
+        received from the chatroom.
+      </div>
     </main>
   </body>
 </html>
