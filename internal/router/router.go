@@ -29,8 +29,8 @@ func New(render func(http.ResponseWriter, string, any)) http.Handler {
 
 func (r *Router) connectors(w http.ResponseWriter, _ *http.Request) {
 	data := map[string]any{
-		"Title": "Anasayfa",
-		"User":  "Uygar",
+		"Title": "Connectors",
+		"User":  "default",
 	}
 	r.render(w, "connectors", data)
 }
@@ -39,11 +39,11 @@ func (r *Router) identification(w http.ResponseWriter, _ *http.Request) {
 	posts := []Post{
 		{
 			ID:    1,
-			Title: "Go Templates ile Başlarken",
+			Title: "Identification 1",
 		},
 		{
 			ID:    2,
-			Title: "HTMX’a Giriş",
+			Title: "Identification 2",
 		},
 	}
 
