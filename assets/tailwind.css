@@ -1,22 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #E40040;
-  --color-secondary: #D37A93;
-}
-
-.container {
-  @apply mx-auto px-4;
+  --color-primary: #e40040;
+  --color-secondary: #d37a93;
+  --color-primary-green: rgb(0, 255, 102);
+  --color-primary-cyan: rgb(0, 255, 255);
+  --color-primary-blue: rgb(0, 41, 255);
+  --color-primary-red: rgb(252, 43, 43);
+  --color-primary-grey: rgb(51, 51, 51);
 }
 
 .btn {
   @apply inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium border bg-white hover:bg-neutral-50;
-}
-
-.input {
-  @apply w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900/10;
-}
-
-.card {
-  @apply rounded-lg border bg-white p-4 shadow-sm;
 }

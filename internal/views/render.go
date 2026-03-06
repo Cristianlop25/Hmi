@@ -8,7 +8,7 @@ import (
 func Render(w http.ResponseWriter, r *http.Request, name string, data any) {
 	if r.Header.Get("HX-Request") == "true" {
 		tpl := template.Must(template.ParseFiles(
-			"views/pages/" + name + ".html",
+			"templates/pages/" + name + ".html",
 		))
 
 		_ = tpl.ExecuteTemplate(w, "content", data)
@@ -16,8 +16,8 @@ func Render(w http.ResponseWriter, r *http.Request, name string, data any) {
 	}
 
 	tpl := template.Must(template.ParseFiles(
-		"views/layouts/base.html",
-		"views/pages/"+name+".html",
+		"templates/layouts/base.html",
+		"templates/pages/"+name+".html",
 	))
 
 	_ = tpl.ExecuteTemplate(w, "base", data)

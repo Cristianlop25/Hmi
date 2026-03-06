@@ -13,7 +13,22 @@
         {{.Name}}
       </div>
       <div class="h-[39px] mt-0 text-white text-[26px]">{{.Type}}</div>
-      <img src="{{.Type.IconPath}}" alt="connector-icon" class="" />
+      <img
+        src="{{.Type.IconPath}}"
+        alt="connector-icon"
+        class="h-[288px] w-auto"
+      />
+      <div class="relative w-[344px] h-4 mt-4">
+        <div
+          class="absolute inset-0 rounded-[56px] blur-md opacity-60 {{.Status.ColorClass}}"
+        ></div>
+        <div
+          class="relative rounded-[56px] w-full h-full opacity-70 {{.Status.ColorClass}}"
+        ></div>
+      </div>
+      <div class="w-[344px] h-[39px] mt-4 text-white text-[20px]">
+        {{.Status}}
+      </div>
     </div>
     {{end}}
   </div>

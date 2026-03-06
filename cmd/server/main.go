@@ -4,10 +4,11 @@ import (
 	"log"
 	"net/http"
 
-	"hmi-sonic/internal/render"
+	"hmi-sonic/internal/connectors"
 	"hmi-sonic/internal/router"
 	"hmi-sonic/internal/sse"
 	"hmi-sonic/internal/terminal"
+	"hmi-sonic/internal/views"
 )
 
 func main() {
@@ -18,7 +19,9 @@ func main() {
 	mux.Handle("/sprite.svg", http.FileServer(http.Dir("assets")))
 	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
 
-	mux.Handle("/", router.New(render.Render))
+	connectorService := connectors.StaticService{}
+
+	mux.Handle("/", router.New(render.Render, connectorService))
 	mux.HandleFunc("/events", hub.Handler)
 
 	go hub.Run()

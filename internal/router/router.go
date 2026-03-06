@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"time"
 
+	"hmi-sonic/internal/connectors"
+
 	"github.com/go-chi/chi/v5"
 )
 
@@ -15,47 +17,15 @@ type Post struct {
 type RenderFunc func(http.ResponseWriter, *http.Request, string, any)
 
 type Router struct {
-	render RenderFunc
+	render            RenderFunc
+	connectorsService connectors.Service
 }
 
-type ConnectorType string
-
-const (
-	CCS2    ConnectorType = "CCS2"
-	CCS1    ConnectorType = "CCS1"
-	Schuko  ConnectorType = "Schuko"
-	CHAdeMO ConnectorType = "CHAdeMO"
-	Type1   ConnectorType = "Type1"
-	Type2   ConnectorType = "Type2"
-)
-
-type Connector struct {
-	Name string
-	Type ConnectorType
-}
-
-func (connectorType ConnectorType) IconPath() string {
-	connectorsDir := "/assets/images/connectors/"
-	switch connectorType {
-	case CCS2:
-		return connectorsDir + "ccs2.svg"
-	case CCS1:
-		return connectorsDir + "ccs1.svg"
-	case Schuko:
-		return connectorsDir + "schuko.svg"
-	case Type1:
-		return connectorsDir + "type1.svg"
-	case Type2:
-		return connectorsDir + "type2.svg"
-	case CHAdeMO:
-		return connectorsDir + "chademo.svg"
-	default:
-		return connectorsDir + "default.svg"
+func New(render RenderFunc, connectorsService connectors.Service) http.Handler {
+	r := &Router{
+		render:            render,
+		connectorsService: connectorsService,
 	}
-}
-
-func New(render func(http.ResponseWriter, *http.Request, string, any)) http.Handler {
-	r := &Router{render: render}
 	router := chi.NewRouter()
 
 	router.Get("/", r.connectors)
@@ -65,15 +35,17 @@ func New(render func(http.ResponseWriter, *http.Request, string, any)) http.Hand
 	return router
 }
 
-func (r *Router) connectors(w http.ResponseWriter, req *http.Request) {
-	connectors := []Connector{
-		{Name: "Socket A", Type: CCS1},
-		{Name: "Socket B", Type: CCS2},
+func (router *Router) connectors(w http.ResponseWriter, req *http.Request) {
+	connectors, err := router.connectorsService.List()
+	if err != nil {
+		http.Error(w, "failed to load connectors", http.StatusInternalServerError)
+		return
 	}
+
 	data := map[string]any{
 		"Connectors": connectors,
 	}
-	r.render(w, req, "connectors", data)
+	router.render(w, req, "connectors", data)
 }
 
 func (r *Router) identification(w http.ResponseWriter, req *http.Request) {
