@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
+@source "../templates/**/*.html";
+
 @theme {
   --color-primary: #e40040;
   --color-secondary: #d37a93;
+  --color-primary-white: #ffffff;
   --color-primary-green: rgb(0, 255, 102);
   --color-primary-cyan: rgb(0, 255, 255);
   --color-primary-blue: rgb(0, 41, 255);

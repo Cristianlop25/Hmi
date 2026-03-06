@@ -5,10 +5,11 @@ import (
 	"net/http"
 
 	"hmi-sonic/internal/connectors"
+	"hmi-sonic/internal/identification"
 	"hmi-sonic/internal/router"
 	"hmi-sonic/internal/sse"
 	"hmi-sonic/internal/terminal"
-	"hmi-sonic/internal/views"
+	render "hmi-sonic/internal/views"
 )
 
 func main() {
@@ -20,8 +21,9 @@ func main() {
 	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
 
 	connectorService := connectors.StaticService{}
+	identificationService := identification.StaticService{}
 
-	mux.Handle("/", router.New(render.Render, connectorService))
+	mux.Handle("/", router.New(render.Render, connectorService, identificationService))
 	mux.HandleFunc("/events", hub.Handler)
 
 	go hub.Run()

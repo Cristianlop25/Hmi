@@ -2,29 +2,26 @@ package router
 
 import (
 	"net/http"
-	"time"
 
 	"hmi-sonic/internal/connectors"
+	"hmi-sonic/internal/identification"
 
 	"github.com/go-chi/chi/v5"
 )
 
-type Post struct {
-	ID    int
-	Title string
-}
-
 type RenderFunc func(http.ResponseWriter, *http.Request, string, any)
 
 type Router struct {
-	render            RenderFunc
-	connectorsService connectors.Service
+	render                RenderFunc
+	connectorsService     connectors.Service
+	identificationService identification.Service
 }
 
-func New(render RenderFunc, connectorsService connectors.Service) http.Handler {
+func New(render RenderFunc, connectorsService connectors.Service, identificationService identification.Service) http.Handler {
 	r := &Router{
-		render:            render,
-		connectorsService: connectorsService,
+		render:                render,
+		connectorsService:     connectorsService,
+		identificationService: identificationService,
 	}
 	router := chi.NewRouter()
 
@@ -35,34 +32,28 @@ func New(render RenderFunc, connectorsService connectors.Service) http.Handler {
 	return router
 }
 
-func (router *Router) connectors(w http.ResponseWriter, req *http.Request) {
+func (router *Router) connectors(writer http.ResponseWriter, request *http.Request) {
 	connectors, err := router.connectorsService.List()
 	if err != nil {
-		http.Error(w, "failed to load connectors", http.StatusInternalServerError)
+		http.Error(writer, "failed to load connectors", http.StatusInternalServerError)
 		return
 	}
 
 	data := map[string]any{
 		"Connectors": connectors,
 	}
-	router.render(w, req, "connectors", data)
+	router.render(writer, request, "connectors", data)
 }
 
-func (r *Router) identification(w http.ResponseWriter, req *http.Request) {
-	posts := []Post{
-		{
-			ID:    1,
-			Title: "Identification 1",
-		},
-		{
-			ID:    2,
-			Title: "Identification 2",
-		},
+func (router *Router) identification(writer http.ResponseWriter, request *http.Request) {
+	identification, err := router.identificationService.Status()
+	if err != nil {
+		http.Error(writer, "failed to load identification", http.StatusInternalServerError)
+		return
 	}
+
 	data := map[string]any{
-		"Title": "Identification",
-		"Year":  time.Now().Year(),
-		"Posts": posts,
+		"Identification": identification,
 	}
-	r.render(w, req, "identification", data)
+	router.render(writer, request, "identification", data)
 }

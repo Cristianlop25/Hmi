@@ -1,15 +1,22 @@
 {{define "content"}}
-<section class="space-y-6">
-  <header class="flex items-end justify-between">
-    <h1 class="text-3xl font-bold">Identification</h1>
-    <div class="w-64">
-      <input class="input" placeholder="" />
+<div
+  class="block w-[984px] h-[632px] min-h-[632px] mt-[176px] mb-[206px] bg-white/10 rounded-3xl overflow-hidden"
+>
+  <div class="w-104.75 h-146 my-6 ml-9.5 flex flex-col items-center">
+    <div class="h-[42px] mt-6 mb-[110px] text-white font-bold text-4xl">
+      {{.Identification.Connector.Status}}
     </div>
-  </header>
-
-  <div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
-    <strong class="block mb-1">Tests</strong>
-    Identification tests.
+    <img
+      src="{{.Identification.Connector.Type.IconPath}}"
+      alt="connector-icon"
+      class="h-[193px] w-auto"
+    />
+    <div class="h-[41px] mt-0 mb-[21px] text-white text-2xl">
+      {{.Identification.Connector.Type}}
+    </div>
+    <div class="h-[54px] mt-[54px] mb-[99px] text-white font-bold text-4xl">
+      {{.Identification.Connector.Name}}
+    </div>
   </div>
-</section>
+</div>
 {{end}}
