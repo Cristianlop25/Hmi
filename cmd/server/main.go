@@ -16,6 +16,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/app.css", http.FileServer(http.Dir("public")))
 	mux.Handle("/sprite.svg", http.FileServer(http.Dir("assets")))
+	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
 
 	mux.Handle("/", router.New(render.Render))
 	mux.HandleFunc("/events", hub.Handler)

@@ -18,6 +18,42 @@ type Router struct {
 	render RenderFunc
 }
 
+type ConnectorType string
+
+const (
+	CCS2    ConnectorType = "CCS2"
+	CCS1    ConnectorType = "CCS1"
+	Schuko  ConnectorType = "Schuko"
+	CHAdeMO ConnectorType = "CHAdeMO"
+	Type1   ConnectorType = "Type1"
+	Type2   ConnectorType = "Type2"
+)
+
+type Connector struct {
+	Name string
+	Type ConnectorType
+}
+
+func (connectorType ConnectorType) IconPath() string {
+	connectorsDir := "/assets/images/connectors/"
+	switch connectorType {
+	case CCS2:
+		return connectorsDir + "ccs2.svg"
+	case CCS1:
+		return connectorsDir + "ccs1.svg"
+	case Schuko:
+		return connectorsDir + "schuko.svg"
+	case Type1:
+		return connectorsDir + "type1.svg"
+	case Type2:
+		return connectorsDir + "type2.svg"
+	case CHAdeMO:
+		return connectorsDir + "chademo.svg"
+	default:
+		return connectorsDir + "default.svg"
+	}
+}
+
 func New(render func(http.ResponseWriter, *http.Request, string, any)) http.Handler {
 	r := &Router{render: render}
 	router := chi.NewRouter()
@@ -30,18 +66,11 @@ func New(render func(http.ResponseWriter, *http.Request, string, any)) http.Hand
 }
 
 func (r *Router) connectors(w http.ResponseWriter, req *http.Request) {
-	type Connector struct {
-		Name string
-		Type string
-	}
-
 	connectors := []Connector{
-		{Name: "Socket A", Type: "CCS2"},
-		{Name: "Socket B", Type: "CCS2"},
+		{Name: "Socket A", Type: CCS1},
+		{Name: "Socket B", Type: CCS2},
 	}
 	data := map[string]any{
-		"Title":      "Connectors",
-		"Year":       time.Now().Year(),
 		"Connectors": connectors,
 	}
 	r.render(w, req, "connectors", data)
